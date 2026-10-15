@@ -2,6 +2,18 @@ import React from 'react'
 import { NavLink, Outlet } from 'react-router'
 
 function AppLayout() {
+  const [isAppReady, updateAppStatus] = React.useState(false)
+
+  setTimeout(() => {
+    updateAppStatus(true)
+  }, 3 * 1000);
+
+  if(!isAppReady) {
+    return (<div>
+      Page is Loading
+    </div>);
+  }
+
   return (
     <div>
         <header>HEADER</header>
