@@ -1,89 +1,111 @@
 import React, { useEffect, useState } from "react";
 
-const AddStudent = ({ totalStudents }) => {
-  const [name, setName] = useState("");
-  const [dummyArr, setDummyArr] = useState([]);
+const AddStudent = ({ totalStudents, fetchStudents }) => {
+  const [form, setForm] = useState({
+    name: "",
+    fatherName: "",
+    email: "",
+    phone: "",
+    dob: "",
+  });
 
-  // 1. Mount or Mounted
-  useEffect(() => {
-    console.log("Add Student is Loaded");
-  }, []);
+  const saveForm = async (e) => {
+    e.preventDefault();
 
-  //   2. Update or Updated
-  useEffect(() => {
-    console.log("Name is updated : ", name);
-  }, [name]);
+    // alert(JSON.stringify(form, " ", 2));
 
-  //   3. Unmount or Unmounted
-  useEffect(() => {
-    return () => {
-      console.log("Add student component is unmounted");
-    };
-  }, []);
-
-  const AddNewRecord = () => {
-    setDummyArr((prevData) => [
-      ...prevData,
-      {
-        id: prevData.length + 1,
-        name: "XyZ",
+    const response = await fetch("http://localhost:5789/student", {
+      method: "POST",
+      body: JSON.stringify(form),
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
       },
-    ]);
-  };
+    });
+    const addRes = await response.json();
 
-  const UpdateRecord = () => {
-    setDummyArr((prevData) =>
-      prevData.map((pD) => {
-        if (pD.id == 3) {
-          return {
-            id: 3,
-            name: "ABC",
-          };
-        }
-        return pD;
-      }),
-    );
+    fetchStudents();
   };
 
   return (
     <div>
       <div>Total Students are = {totalStudents}</div>
-      <div>Hi! {name || "Guest"}</div>
-      <button onClick={AddNewRecord}>Add New</button>
-
-      <button onClick={UpdateRecord}>Update</button>
-
-      {dummyArr.map((arr) => (
-        <div>
-          {arr.name} | {arr.id}
-        </div>
-      ))}
-
-      <form action="" method="post">
+      <pre>{JSON.stringify(form, " ", 2)}</pre>
+      <form action="" method="post" onSubmit={saveForm}>
         <div>
           <label htmlFor="">Name</label>
           <input
             type="text"
             placeholder="Name"
-            value={name}
-            onChange={(e) => setName(e.target.value)}
+            value={form.name}
+            onChange={(e) =>
+              setForm((prevForm) => ({
+                ...prevForm,
+                name: e.target.value,
+              }))
+            }
+            required
           />
         </div>
         <div>
-          <label htmlFor="">Name</label>
-          <input type="text" placeholder="Name" />
+          <label htmlFor="">Father's Name</label>
+          <input
+            type="text"
+            placeholder="Father's Name"
+            value={form.fatherName}
+            onChange={(e) =>
+              setForm((prevForm) => ({
+                ...prevForm,
+                fatherName: e.target.value,
+              }))
+            }
+            required
+          />
         </div>
         <div>
           <label htmlFor="">Phone No.</label>
-          <input type="text" placeholder="Phone No." />
+          <input
+            type="text"
+            placeholder="Phone No."
+            value={form.phone}
+            onChange={(e) =>
+              setForm((prevForm) => ({
+                ...prevForm,
+                phone: e.target.value,
+              }))
+            }
+            required
+          />
         </div>
         <div>
           <label htmlFor="">Email</label>
-          <input type="email" placeholder="Email" />
+          <input
+            type="email"
+            placeholder="Email"
+            value={form.email}
+            onChange={(e) =>
+              setForm((prevForm) => ({
+                ...prevForm,
+                email: e.target.value,
+              }))
+            }
+            required
+          />
         </div>
         <div>
           <label htmlFor="">Date of Birth</label>
-          <input type="date" placeholder="Date of Birth" />
+          <input
+            type="date"
+            placeholder="Date of Birth"
+            value={form.dob}
+            onChange={(e) =>
+              setForm((prevForm) => ({
+                ...prevForm,
+                dob: e.target.value,
+              }))
+            }
+            required
+          />
         </div>
         <button>Save Details</button>
       </form>
