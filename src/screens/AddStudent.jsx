@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-const AddStudent = ({ totalStudents, fetchStudents }) => {
+const AddStudent = ({ totalStudents, fetchStudents, editData }) => {
   const [form, setForm] = useState({
     name: "",
     fatherName: "",
@@ -9,20 +9,42 @@ const AddStudent = ({ totalStudents, fetchStudents }) => {
     dob: "",
   });
 
+  useEffect(() => {
+    if (!editData)
+      setForm({
+        name: "",
+        fatherName: "",
+        email: "",
+        phone: "",
+        dob: "",
+      });
+    else setForm(editData);
+  }, [editData]);
+
   const saveForm = async (e) => {
     e.preventDefault();
 
-    // alert(JSON.stringify(form, " ", 2));
-
-    const response = await fetch("http://localhost:5789/student", {
-      method: "POST",
-      body: JSON.stringify(form),
-      headers: {
-        "Content-Type": "application/json",
-        Accept: "application/json",
-      },
-    });
-    const addRes = await response.json();
+    if (!editData) {
+      const response = await fetch("http://localhost:5789/student", {
+        method: "POST",
+        body: JSON.stringify(form),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      await response.json();
+    } else {
+      const res = await fetch(`http://localhost:5789/student/${editData._id}`, {
+        method: "PUT",
+        body: JSON.stringify(form),
+        headers: {
+          "Content-Type": "application/json",
+          Accept: "application/json",
+        },
+      });
+      await res.json();
+    }
 
     fetchStudents();
   };
@@ -107,7 +129,7 @@ const AddStudent = ({ totalStudents, fetchStudents }) => {
             required
           />
         </div>
-        <button>Save Details</button>
+        <button>{editData ? "Update" : "Save"} Details</button>
       </form>
     </div>
   );

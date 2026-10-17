@@ -4,9 +4,12 @@ import AddStudent from "./AddStudent";
 const StudentScreen = () => {
   const [loading, setLoading] = useState(false);
   const [students, setStudents] = React.useState([]);
+  const [editData, setEditData] = useState(null);
 
   const fetchStudents = async () => {
     setLoading(true);
+
+    setEditData(null);
 
     const response = await fetch("http://localhost:5789/student");
 
@@ -22,11 +25,27 @@ const StudentScreen = () => {
     fetchStudents();
   }, []);
 
+  const handleDelete = async (id) => {
+    if (!confirm("Are you sure to delete this record?")) return;
+
+    const res = await fetch(`http://localhost:5789/student/${id}`, {
+      method: "DELETE",
+      headers: {
+        "Content-Type": "application/json",
+        Accept: "application/json",
+      },
+    });
+    await res.json();
+
+    fetchStudents();
+  };
+
   return (
     <div>
       <AddStudent
         totalStudents={students.length}
         fetchStudents={fetchStudents}
+        editData={editData}
       />
       {loading ? (
         <div>Loading students....</div>
@@ -54,8 +73,12 @@ const StudentScreen = () => {
                 <td>{sRow.dob}</td>
                 <td>
                   <button type="button">View Details</button>
-                  <button type="button">Edit</button>
-                  <button type="button">Delete</button>
+                  <button type="button" onClick={() => setEditData(sRow)}>
+                    Edit
+                  </button>
+                  <button type="button" onClick={() => handleDelete(sRow._id)}>
+                    Delete
+                  </button>
                 </td>
               </tr>
             ))}
