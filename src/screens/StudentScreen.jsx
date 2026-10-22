@@ -21,6 +21,7 @@ const StudentScreen = () => {
 
     setLoading(false);
   };
+
   useEffect(() => {
     fetchStudents();
   }, []);
