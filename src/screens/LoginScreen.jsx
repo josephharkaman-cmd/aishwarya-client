@@ -23,6 +23,9 @@ function LoginScreen() {
     const res = await response.json();
 
     console.log("Register response: ", res);
+
+    localStorage.setItem("@token", res.token)
+    location.reload()
   };
 
   return (
