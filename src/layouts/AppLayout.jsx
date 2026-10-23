@@ -18,6 +18,12 @@ function AppLayout() {
     return <LoginScreen />;
   }
 
+  const handleLogout = () => {
+    localStorage.removeItem("@token")
+
+    location.reload()
+  }
+
   return (
     <div>
       <header>HEADER</header>
@@ -31,6 +37,9 @@ function AppLayout() {
           </li>
           <li>Teacher</li>
           <li>Staff</li>
+          <li>
+            <button type="button" onClick={handleLogout}>Logout</button>
+          </li>
         </ul>
       </nav>
       <main>
